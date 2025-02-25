@@ -5,6 +5,8 @@
 #include <cstdlib>
 #include <algorithm>
 #include <random>
+#include <thread>  // For sleep function
+#include <chrono>  // For time duration
 
 using namespace std;
 
@@ -13,9 +15,9 @@ enum Role { WEREWOLF, VILLAGER, SEER, BODYGUARD, BEGGAR, SPELLCASTER, HUNTER };
 struct Player {
     string name;
     Role role;
-    bool alive;
-    bool protectedThisNight;
-    bool muted;
+    bool alive ;
+    bool protectedThisNight ;
+    bool muted ;
 };
 
 void assignRoles(vector<Player>& players) {
@@ -26,7 +28,7 @@ void assignRoles(vector<Player>& players) {
     int numBodyguards = 1;
     int numBeggars = 1;
     int numSpellcasters = 1;
-    int numHunters = 1; // เพิ่มนายพราน 1 คน
+    int numHunters = 1;
 
     for (int i = 0; i < numWerewolves; ++i) players[i].role = WEREWOLF;
     for (int i = numWerewolves; i < numWerewolves + numSeers; ++i) players[i].role = SEER;
@@ -42,6 +44,8 @@ void assignRoles(vector<Player>& players) {
 }
 
 void displayRoles(const vector<Player>& players) {
+    cout << "\nEach player's role will be shown for 15 seconds. Memorize your role!\n\n";
+    
     for (const auto& player : players) {
         cout << player.name << " is a ";
         switch (player.role) {
@@ -55,6 +59,31 @@ void displayRoles(const vector<Player>& players) {
         }
         cout << endl;
     }
+
+    this_thread::sleep_for(chrono::seconds(10));
+
+    #ifdef _WIN32
+        system("CLS");
+    #else
+        system("clear");
+    #endif
+
+    cout << "\nRoles have been hidden. The game begins now!" << endl;
+}
+
+void bodyguardProtection(vector<Player>& players) {
+    string protectTarget;
+    cout << "The Bodyguard is awake! Choose a player to protect: ";
+    cin >> protectTarget;
+
+    for (auto& player : players) {
+        if (player.name == protectTarget && player.alive) {
+            player.protectedThisNight = true;
+            cout << player.name << " has been protected by the Bodyguard!" << endl;
+            return;
+        }
+    }
+    cout << "Player not found or already dead. No one was protected." << endl;
 }
 
 void hunterRevenge(vector<Player>& players) {
@@ -80,7 +109,7 @@ void nightPhase(vector<Player>& players) {
 
     for (auto& player : players) {
         if (player.alive && player.role == WEREWOLF) {
-            cout << player.name << ", choose a player to kill: ";
+            cout << "Werewolf, choose a player to kill: ";
             cin >> werewolfTarget;
             for (auto& p : players) {
                 if (p.name == werewolfTarget && p.alive) {
@@ -95,7 +124,7 @@ void nightPhase(vector<Player>& players) {
     for (auto& player : players) {
         if (player.alive && player.role == SEER) {
             string seerTarget;
-            cout << player.name << ", choose a player to inspect: ";
+            cout << "Seer, choose a player to inspect: ";
             cin >> seerTarget;
             for (auto& p : players) {
                 if (p.name == seerTarget && p.alive) {
@@ -124,7 +153,7 @@ void nightPhase(vector<Player>& players) {
     for (auto& player : players) {
         if (player.alive && player.role == BODYGUARD) {
             string bodyguardProtection;
-            cout << player.name << ", choose a player to protect: ";
+            cout <<  "Bodyguard, choose a player to protect: ";
             cin >> bodyguardProtection;
             for (auto& p : players) {
                 if (p.name == bodyguardProtection && p.alive) {
@@ -140,7 +169,7 @@ void nightPhase(vector<Player>& players) {
     for (auto& player : players) {
         if (player.alive && player.role == SPELLCASTER) {
             string spellTarget;
-            cout << player.name << ", choose a player to silence for the next round: ";
+            cout << "Spellcaster, choose a player to silence for the next round: ";
             cin >> spellTarget;
             for (auto& p : players) {
                 if (p.name == spellTarget && p.alive) {
@@ -174,13 +203,12 @@ void nightPhase(vector<Player>& players) {
     }
 }
 
-
 void dayPhase(vector<Player>& players) {
     cout << "\nDay breaks. Villagers, choose someone to lynch." << endl;
-
     string targetName;
     cout << "Enter the name of the player to lynch: ";
     cin >> targetName;
+
     for (auto& player : players) {
         if (player.name == targetName && player.alive) {
             player.alive = false;
@@ -190,7 +218,6 @@ void dayPhase(vector<Player>& players) {
                 cout << "The Beggar has been lynched and wins the game!" << endl;
                 exit(0);
             }
-
 
             if (player.role == HUNTER) {
                 hunterRevenge(players);
@@ -238,7 +265,7 @@ int main() {
         string name;
         cout << "Enter name for player " << i + 1 << ": ";
         cin >> name;
-        players.push_back({name, VILLAGER, true, false});
+        players.push_back({name, VILLAGER, true, false, false});
     }
 
     assignRoles(players);
@@ -254,7 +281,3 @@ int main() {
     cout << "Game over!" << endl;
     return 0;
 }
-
-
-
-
