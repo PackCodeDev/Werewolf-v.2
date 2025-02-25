@@ -60,7 +60,7 @@ void displayRoles(const vector<Player>& players) {
         cout << endl;
     }
 
-    this_thread::sleep_for(chrono::seconds(30));
+    this_thread::sleep_for(chrono::seconds(10));
 
     #ifdef _WIN32
         system("CLS");
@@ -219,3 +219,4 @@ int main() {
     cout << "Game over!" << endl;
     return 0;
 }
+
