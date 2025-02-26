@@ -15,9 +15,9 @@ enum Role { WEREWOLF, VILLAGER, SEER, BODYGUARD, BEGGAR, SPELLCASTER, HUNTER };
 struct Player {
     string name;
     Role role;
-    bool alive ;
-    bool protectedThisNight ;
-    bool muted ;
+    bool alive;
+    bool protectedThisNight;
+    bool muted;
 };
 
 void assignRoles(vector<Player>& players) {
@@ -43,11 +43,19 @@ void assignRoles(vector<Player>& players) {
     shuffle(players.begin(), players.end(), g);
 }
 
-void displayRoles(const vector<Player>& players) {
-    cout << "\nEach player's role will be shown for 15 seconds. Memorize your role!\n\n";
-    
-    for (const auto& player : players) {
-        cout << player.name << " is a ";
+void displayRoles(vector<Player>& players) {
+    cout << "\nEach player will see their role privately. Press Enter to continue.\n";
+
+    for (auto& player : players) {
+        cout << "\n" << player.name << ", it's your turn to see your role." << endl;
+        cout << "Press Enter when you're ready to see your role...";
+        
+        // Wait for Enter
+        cin.ignore();  
+        cin.get();     
+
+        // Show player's role
+        cout << "Your role is: ";
         switch (player.role) {
             case WEREWOLF: cout << "Werewolf"; break;
             case VILLAGER: cout << "Villager"; break;
@@ -57,35 +65,23 @@ void displayRoles(const vector<Player>& players) {
             case SPELLCASTER: cout << "Spellcaster"; break;
             case HUNTER: cout << "Hunter"; break;
         }
-        cout << endl;
+        cout << "\nRemember your role! Press Enter to continue to the next player...";
+        
+        // Wait for Enter
+        cin.ignore();  
+        cin.get();     
+
+        // Clear screen
+        #ifdef _WIN32
+            system("CLS");
+        #else
+            system("clear");
+        #endif
     }
 
-    this_thread::sleep_for(chrono::seconds(10));
-
-    #ifdef _WIN32
-        system("CLS");
-    #else
-        system("clear");
-    #endif
-
-    cout << "\nRoles have been hidden. The game begins now!" << endl;
+    cout << "\nAll roles have been assigned. The game begins now!" << endl;
+    this_thread::sleep_for(chrono::seconds(2)); // Wait for players to prepare before starting
 }
-
-void bodyguardProtection(vector<Player>& players) {
-    string protectTarget;
-    cout << "The Bodyguard is awake! Choose a player to protect: ";
-    cin >> protectTarget;
-
-    for (auto& player : players) {
-        if (player.name == protectTarget && player.alive) {
-            player.protectedThisNight = true;
-            cout << player.name << " has been protected by the Bodyguard!" << endl;
-            return;
-        }
-    }
-    cout << "Player not found or already dead. No one was protected." << endl;
-}
-
 void hunterRevenge(vector<Player>& players) {
     string target;
     cout << "The Hunter has died! Choose someone to take down with you: ";
@@ -107,10 +103,25 @@ void nightPhase(vector<Player>& players) {
     string werewolfTarget;
     bool victimFound = false;
 
+    // Werewolf selects victim
     for (auto& player : players) {
         if (player.alive && player.role == WEREWOLF) {
             cout << "Werewolf, choose a player to kill: ";
             cin >> werewolfTarget;
+
+            // Wait for Enter to hide the action
+            cout << "Press Enter to hide...";
+            cin.ignore();  // Clear buffer
+            cin.get();     // Wait for Enter
+            
+            // Clear the screen after selection
+            #ifdef _WIN32
+                system("CLS");  // For Windows
+            #else
+                system("clear");  // For Linux/macOS
+            #endif
+
+            // Find the target
             for (auto& p : players) {
                 if (p.name == werewolfTarget && p.alive) {
                     victimFound = true;
@@ -120,7 +131,8 @@ void nightPhase(vector<Player>& players) {
             if (victimFound) break;
         }
     }
-    
+
+    // Seer checks a player
     for (auto& player : players) {
         if (player.alive && player.role == SEER) {
             string seerTarget;
@@ -128,7 +140,7 @@ void nightPhase(vector<Player>& players) {
             cin >> seerTarget;
             for (auto& p : players) {
                 if (p.name == seerTarget && p.alive) {
-                    cout << player.name << ", the role of " << seerTarget << " is ";
+                    cout << "The role of " << seerTarget << " is: ";
                     switch (p.role) {
                         case WEREWOLF: cout << "Werewolf"; break;
                         case VILLAGER: cout << "Villager"; break;
@@ -138,22 +150,34 @@ void nightPhase(vector<Player>& players) {
                         case SPELLCASTER: cout << "Spellcaster"; break;
                         case HUNTER: cout << "Hunter"; break;
                     }
-                    cout << "." << endl;
+                    cout << endl;
                     break;
                 }
             }
+
+            // Wait for Enter to hide the action
+            cout << "Press Enter to hide...";
+            cin.ignore();  // Clear buffer
+            cin.get();     // Wait for Enter
+            
+            // Clear the screen after selection
+            #ifdef _WIN32
+                system("CLS");  // For Windows
+            #else
+                system("clear");  // For Linux/macOS
+            #endif
+
+            // Check player's role
+            
             break;
         }
     }
 
-    for (auto& player : players) {
-        player.protectedThisNight = false;
-    }
-
+    // Bodyguard protection
     for (auto& player : players) {
         if (player.alive && player.role == BODYGUARD) {
             string bodyguardProtection;
-            cout <<  "Bodyguard, choose a player to protect: ";
+            cout << "Bodyguard, choose a player to protect: ";
             cin >> bodyguardProtection;
             for (auto& p : players) {
                 if (p.name == bodyguardProtection && p.alive) {
@@ -162,19 +186,49 @@ void nightPhase(vector<Player>& players) {
                     break;
                 }
             }
+
+            // Wait for Enter to hide the action
+            cout << "Press Enter to hide...";
+            cin.ignore();  // Clear buffer
+            cin.get();     // Wait for Enter
+            
+            // Clear the screen after selection
+            #ifdef _WIN32
+                system("CLS");  // For Windows
+            #else
+                system("clear");  // For Linux/macOS
+            #endif
+
+            // Protect the player
+           
             break;
         }
     }
 
+    // Spellcaster silences
     for (auto& player : players) {
         if (player.alive && player.role == SPELLCASTER) {
             string spellTarget;
-            cout << "Spellcaster, choose a player to silence for the next round: ";
+            cout << "Spellcaster, choose a player to silence: ";
             cin >> spellTarget;
+
+            // Wait for Enter to hide the action
+            cout << "Press Enter to hide...";
+            cin.ignore();  // Clear buffer
+            cin.get();     // Wait for Enter
+            
+            // Clear the screen after selection
+            #ifdef _WIN32
+                system("CLS");  // For Windows
+            #else
+                system("clear");  // For Linux/macOS
+            #endif
+
+            // Silence the player
             for (auto& p : players) {
                 if (p.name == spellTarget && p.alive) {
                     p.muted = true;
-                    cout << p.name << " has been silenced and cannot speak during the next round!" << endl;
+                    cout << p.name << " has been silenced and cannot speak next round!" << endl;
                     break;
                 }
             }
@@ -182,6 +236,7 @@ void nightPhase(vector<Player>& players) {
         }
     }
 
+    // Process Werewolf's attack
     if (victimFound) {
         for (auto& p : players) {
             if (p.name == werewolfTarget && p.alive) {
@@ -203,6 +258,7 @@ void nightPhase(vector<Player>& players) {
     }
 }
 
+
 void dayPhase(vector<Player>& players) {
     cout << "\nDay breaks. Villagers, choose someone to lynch." << endl;
     string targetName;
@@ -213,15 +269,6 @@ void dayPhase(vector<Player>& players) {
         if (player.name == targetName && player.alive) {
             player.alive = false;
             cout << player.name << " was lynched by the Villagers." << endl;
-
-            if (player.role == BEGGAR) {
-                cout << "The Beggar has been lynched and wins the game!" << endl;
-                exit(0);
-            }
-
-            if (player.role == HUNTER) {
-                hunterRevenge(players);
-            }
             return;
         }
     }
