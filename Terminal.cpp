@@ -80,8 +80,8 @@ void displayRoles(vector<Player>& players) {
         #endif
     }
 
-    cout << "\n\033[35m All roles have been assigned. The game begins now!\033[0m" << endl;
-    this_thread::sleep_for(chrono::seconds(15)); // Wait for players to prepare before starting
+    cout << "\n\033[35m All roles have been assigned. The game begins now!close your eyes\033[0m" << endl;
+    this_thread::sleep_for(chrono::seconds(5)); // Wait for players to prepare before starting
 }
 void hunterRevenge(vector<Player>& players) {
     string target;
