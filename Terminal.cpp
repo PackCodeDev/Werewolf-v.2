@@ -81,7 +81,7 @@ void displayRoles(vector<Player>& players) {
     }
 
     cout << "\n\033[35m All roles have been assigned. The game begins now!\033[0m" << endl;
-    this_thread::sleep_for(chrono::seconds(2)); // Wait for players to prepare before starting
+    this_thread::sleep_for(chrono::seconds(15)); // Wait for players to prepare before starting
 }
 void hunterRevenge(vector<Player>& players) {
     string target;
@@ -192,7 +192,7 @@ void nightPhase(vector<Player>& players) {
             cin >> werewolfTarget;
 
             // Wait for Enter to hide the action
-            cout << "Press Enter to hide...";
+            cout << "Press Enter to hide and close your eyes...";
             cin.ignore();  // Clear buffer
             cin.get();     // Wait for Enter
             
@@ -242,9 +242,9 @@ _---              000000     000000              ---_
                     cout << "The role of " << seerTarget << " is: ";
                     // Check if the player is a Werewolf and respond accordingly
                 if (p.role == WEREWOLF) {
-                    cout << "Yes" << endl;
+                    cout << "Bad" << endl;
                 } else {
-                    cout << "No" << endl;
+                    cout << "Good" << endl;
                 }
                     cout << endl;
                     break;
@@ -252,7 +252,7 @@ _---              000000     000000              ---_
             }
 
             // Wait for Enter to hide the action
-            cout << "Press Enter to hide...";
+            cout << "Press Enter to hide and close your eyes...";
             cin.ignore();  // Clear buffer
             cin.get();     // Wait for Enter
             
@@ -311,7 +311,7 @@ _---              000000     000000              ---_
             }
 
             // Wait for Enter to hide the action
-            cout << "Press Enter to hide...";
+            cout << "Press Enter to hide and close your eyes...";
             cin.ignore();  // Clear buffer
             cin.get();     // Wait for Enter
             
@@ -365,7 +365,7 @@ $ $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ $
             cin >> spellTarget;
 
             // Wait for Enter to hide the action
-            cout << "Press Enter to hide...";
+            cout << "Press Enter to hide and close your eyes...";
             cin.ignore();  // Clear buffer
             cin.get();     // Wait for Enter
             
