@@ -5,6 +5,7 @@
 #include <cstdlib>
 #include <algorithm>
 #include <random>
+#include <windows.h>
 #include <thread>  // For sleep function
 #include <chrono>  // For time duration
 
