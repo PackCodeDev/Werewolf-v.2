@@ -121,6 +121,8 @@ void hunterRevenge(vector<Player>& players) {
 }
 
 void nightPhase(vector<Player>& players) {
+
+    Beep(500, 300);  // เสียง Beep หลังจากหน่วงเวลา
     cout << "\nNight falls. Werewolves, choose your victim." << endl;
 
     string werewolfTarget;
@@ -166,6 +168,9 @@ void nightPhase(vector<Player>& players) {
             cin.ignore();  // Clear buffer
             cin.get();     // Wait for Enter
             
+            this_thread::sleep_for(chrono::seconds(20)); // หน่วงเวลา 20วินาที
+            Beep(500, 300);  // เสียง Beep หลังจากหน่วงเวลา
+
             // Clear the screen after selection
             #ifdef _WIN32
                 system("CLS");  // For Windows
@@ -223,6 +228,8 @@ _---              000000     000000              ---_
             cin.ignore();  // Clear buffer
             cin.get();     // Wait for Enter
             
+            this_thread::sleep_for(chrono::seconds(20)); // หน่วงเวลา 20วินาที
+            Beep(500, 300);  // เสียง Beep หลังจากหน่วงเวลา
             // Clear the screen after selection
             #ifdef _WIN32
                 system("CLS");  // For Windows
@@ -280,6 +287,8 @@ _---              000000     000000              ---_
             cin.ignore();  // Clear buffer
             cin.get();     // Wait for Enter
             
+            this_thread::sleep_for(chrono::seconds(20)); // หน่วงเวลา 20วินาที
+            Beep(500, 300);  // เสียง Beep หลังจากหน่วงเวลา
             // Clear the screen after selection
             #ifdef _WIN32
                 system("CLS");  // For Windows
@@ -332,6 +341,8 @@ $ $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ $
             cin.ignore();  // Clear buffer
             cin.get();     // Wait for Enter
             
+            this_thread::sleep_for(chrono::seconds(20)); // หน่วงเวลา 20วินาที
+            Beep(500, 300);  // เสียง Beep หลังจากหน่วงเวลา
             // Clear the screen after selection
             #ifdef _WIN32
                 system("CLS");  // For Windows
@@ -375,6 +386,7 @@ $ $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ $
 
 
 void dayPhase(vector<Player>& players) {
+    Beep(500, 1000);  // เสียง Beep
     cout << "\n\033[36mDay breaks. Villagers, choose someone to lynch.\033[0m" << endl;
     string targetName;
     cout << "\033[31mEnter the name of the player to lynch: \033[0m";
@@ -384,6 +396,12 @@ void dayPhase(vector<Player>& players) {
         if (player.name == targetName && player.alive) {
             player.alive = false;
             cout << player.name << "\033[31m was lynched by the Villagers.\033[0m" << endl;
+             // Check if the lynched player is a Beggar
+             if (player.role == BEGGAR) {
+                cout << "The Beggar has been lynched... but the Beggar wins!" << endl;
+                exit(0);  // End the game as Beggar wins
+            }
+        
             return;
         }
     }
