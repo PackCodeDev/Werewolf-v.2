@@ -204,27 +204,8 @@ void nightPhase(vector<Player>& players, bool &hunterDiedAtNight) {
               )" << endl;
               bool validTarget = false;
 
-              while (true) {
-                  cout << "\033[31mWerewolf, choose a player to kill: \033[0m";
-                  cin >> werewolfTarget;
-          
-                  // ตรวจสอบชื่อผู้เล่น
-                  validTarget = false;
-                  for (auto& player : players) {
-                      if (player.name == werewolfTarget && player.alive) {
-                          validTarget = true;
-                          player.alive = false;
-                          cout << player.name << " \033[31m was killed by the Werewolf!\033[0m" << endl;
-                          break;
-                      }
-                  }
-          
-                  if (!validTarget) {
-                      cout << "\033[33mPlayer not found or already dead. Please choose a valid player.\033[0m" << endl;
-                  } else {
-                      break;  // เมื่อเลือกชื่อที่ถูกต้องแล้วออกจากลูป
-                  }
-              }
+              cout << "\033[31mWerewolf, choose a player to kill: \033[0m";
+              cin >> werewolfTarget;
 
             // Wait for Enter to hide the action
             cout << "Press Enter to hide and close your eyes...";
