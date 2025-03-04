@@ -81,7 +81,35 @@ void displayRoles(vector<Player>& players) {
     }
 
     cout << "\n\033[35m All roles have been assigned. The game begins now!close your eyes\033[0m" << endl;
-    this_thread::sleep_for(chrono::seconds(5)); // Wait for players to prepare before starting
+    
+     cout << R"( 
+                                                    
+                      ::---====                
+                        ::----=====            
+                         :::------===          
+                          :::-------===        
+                           ::--------====      
+                            ::--------====     
+                             ::--------====    
+                             :::---------===   
+                              ::----=*=---===  
+                              ::--=-.:@@--===  
+                              ::--+. -@@+-===  
+                              ::---%@@@#--===  
+                              :-------=---===  
+                              -----======--==  
+                             :-----===----===  
+                            ::-----------===   
+                           +---*%+------===    
+                         :::-----------===     
+                      ::::-----------====      
+      =---:::::::::::::------------=====       
+        ==----------------------=====          
+          ========----------=======            
+              =================                
+                                               
+   )" << endl;
+   this_thread::sleep_for(chrono::seconds(5)); // Wait for players to prepare before starting
 }
 void hunterRevenge(vector<Player>& players) {
     string target;
@@ -124,33 +152,7 @@ void hunterRevenge(vector<Player>& players) {
 void nightPhase(vector<Player>& players) {
 
     Beep(500, 300);  // เสียง Beep หลังจากหน่วงเวลา
-     cout << R"( 
-                                                    
-                      ::---====                
-                        ::----=====            
-                         :::------===          
-                          :::-------===        
-                           ::--------====      
-                            ::--------====     
-                             ::--------====    
-                             :::---------===   
-                              ::----=*=---===  
-                              ::--=-.:@@--===  
-                              ::--+. -@@+-===  
-                              ::---%@@@#--===  
-                              :-------=---===  
-                              -----======--==  
-                             :-----===----===  
-                            ::-----------===   
-                           +---*%+------===    
-                         :::-----------===     
-                      ::::-----------====      
-      =---:::::::::::::------------=====       
-        ==----------------------=====          
-          ========----------=======            
-              =================                
-                                               
-   )" << endl;
+    
     cout << "\nNight falls. Werewolves, choose your victim." << endl;
 
     string werewolfTarget;
@@ -196,7 +198,7 @@ void nightPhase(vector<Player>& players) {
             cin.ignore();  // Clear buffer
             cin.get();     // Wait for Enter
             
-            this_thread::sleep_for(chrono::seconds(20)); // หน่วงเวลา 20วินาที
+            this_thread::sleep_for(chrono::seconds(5)); // หน่วงเวลา 20วินาที
             Beep(500, 300);  // เสียง Beep หลังจากหน่วงเวลา
 
             // Clear the screen after selection
@@ -256,7 +258,7 @@ _---              000000     000000              ---_
             cin.ignore();  // Clear buffer
             cin.get();     // Wait for Enter
             
-            this_thread::sleep_for(chrono::seconds(20)); // หน่วงเวลา 20วินาที
+            this_thread::sleep_for(chrono::seconds(5)); // หน่วงเวลา 20วินาที
             Beep(500, 300);  // เสียง Beep หลังจากหน่วงเวลา
             // Clear the screen after selection
             #ifdef _WIN32
@@ -315,7 +317,7 @@ _---              000000     000000              ---_
             cin.ignore();  // Clear buffer
             cin.get();     // Wait for Enter
             
-            this_thread::sleep_for(chrono::seconds(20)); // หน่วงเวลา 20วินาที
+            this_thread::sleep_for(chrono::seconds(5)); // หน่วงเวลา 20วินาที
             Beep(500, 300);  // เสียง Beep หลังจากหน่วงเวลา
             // Clear the screen after selection
             #ifdef _WIN32
@@ -369,7 +371,7 @@ $ $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ $
             cin.ignore();  // Clear buffer
             cin.get();     // Wait for Enter
             
-            this_thread::sleep_for(chrono::seconds(20)); // หน่วงเวลา 20วินาที
+            this_thread::sleep_for(chrono::seconds(5)); // หน่วงเวลา 20วินาที
             Beep(500, 300);  // เสียง Beep หลังจากหน่วงเวลา
             // Clear the screen after selection
             #ifdef _WIN32
