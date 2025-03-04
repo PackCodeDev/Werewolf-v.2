@@ -136,20 +136,31 @@ void hunterRevenge(vector<Player>& players) {
 `:::::`::::::::;' /  / `:#
 ::::::`:::::;'  /  /   `#
 )" << endl;
-    cout << "\033[34m The Hunter has died! Choose someone to take down with you: \033[0m";
+while (true) {
+    cout << "\033[34mThe Hunter has died! Choose someone to take down with you: \033[0m";
     cin >> target;
 
+    // ตรวจสอบชื่อผู้เล่นที่เลือก
+    bool targetValid = false;
     for (auto& player : players) {
         if (player.name == target && player.alive) {
+            targetValid = true;
             player.alive = false;
             cout << player.name << " \033[31m was shot by the Hunter!\033[0m" << endl;
             return;
         }
     }
-    cout << "\033[31m Player not found or already dead. No one was shot.\033[0m" << endl;
+
+    if (!targetValid) {
+        cout << "\033[31mPlayer not found or already dead. Please choose a valid player.\033[0m" << endl;
+    } else {
+        break;  // ถ้าผู้เล่นที่เลือกถูกต้องจะออกจากลูป
+    }
 }
 
-void nightPhase(vector<Player>& players) {
+}
+
+void nightPhase(vector<Player>& players, bool &hunterDiedAtNight) {
 
     Beep(500, 300);  // เสียง Beep หลังจากหน่วงเวลา
     
@@ -176,7 +187,7 @@ void nightPhase(vector<Player>& players) {
                     ._.'      _.'                ;
                  `-.-".-'-' ._.       _.-"    .-"
                `.-" _____  ._              .-"
-              -(.g$$$$$$$b.              .'
+              -(.g$$$$$$$b.              .' 
                 ""^^T$$$P^)            .(:
                   _/  -"  /.'         /:/;
                ._.'-'`-'  ")/         /;/;
@@ -190,8 +201,10 @@ void nightPhase(vector<Player>& players) {
                                       ;                      
                                                                                        
               )" << endl;
-            cout << "\033[31mWerewolf, choose a player to kill: \033[0m";
-            cin >> werewolfTarget;
+              bool validTarget = false;
+
+              cout << "\033[31mWerewolf, choose a player to kill: \033[0m";
+              cin >> werewolfTarget;
 
             // Wait for Enter to hide the action
             cout << "Press Enter to hide and close your eyes...";
@@ -218,6 +231,22 @@ void nightPhase(vector<Player>& players) {
             if (victimFound) break;
         }
     }
+    for (auto& p : players) {
+        if (p.name == werewolfTarget && p.alive) {
+            if (p.protectedThisNight) {
+                cout << p.name << " \033[32m wasprotected and survived!\033[0m" << endl;
+            } else {
+                p.alive = false;
+                cout << p.name << " \033[31m was killed by werewolf\033[0m" << endl;
+
+                // ถ้าฮันเตอร์ตาย ให้บันทึกค่า
+                if (p.role == HUNTER) {
+                    hunterDiedAtNight = true;
+                }
+            }
+            break;
+        }
+    }
 
     // Seer checks a player
     for (auto& player : players) {
@@ -237,21 +266,31 @@ _---              000000     000000              ---_
                  -----_______-----      
                                                         
 )" << endl;
-            cout << "\033[32mSeer, choose a player to inspect: \033[0m";
-            cin >> seerTarget;
-            for (auto& p : players) {
-                if (p.name == seerTarget && p.alive) {
-                    cout << "The role of " << seerTarget << " is: ";
-                    // Check if the player is a Werewolf and respond accordingly
-                if (p.role == WEREWOLF) {
-                    cout << "Bad" << endl;
-                } else {
-                    cout << "Good" << endl;
-                }
-                    cout << endl;
-                    break;
-                }
+while (true) {
+    cout << "\033[32mSeer, choose a player to inspect: \033[0m";
+    cin >> seerTarget;
+
+    bool found = false;
+    for (auto& p : players) {
+        if (p.name == seerTarget && p.alive) {
+            cout << "The role of " << seerTarget << " is: ";
+            if (p.role == WEREWOLF) {
+                cout << "Bad" << endl;
+            } else {
+                cout << "Good" << endl;
             }
+            cout << endl;
+            found = true;
+            break;
+        }
+    }
+
+    if (found) {
+        break;  // If the player is found, exit the loop
+    } else {
+        cout << "\033[33mNot found. Please choose a valid player.\033[0m" << endl;
+    }
+}
 
             // Wait for Enter to hide the action
             cout << "Press Enter to hide and close your eyes...";
@@ -302,13 +341,24 @@ _---              000000     000000              ---_
         
         
             )" << endl;
-            cout << "\033[34mBodyguard, choose a player to protect: \033[0m";
-            cin >> bodyguardProtection;
-            for (auto& p : players) {
-                if (p.name == bodyguardProtection && p.alive) {
-                    p.protectedThisNight = true;
-                    cout << p.name << " is being protected by the Bodyguard." << endl;
-                    break;
+           while (true) {
+                cout << "\033[34mBodyguard, choose a player to protect: \033[0m";
+                cin >> bodyguardProtection;
+        
+                bool found = false;
+                for (auto& p : players) {
+                    if (p.name == bodyguardProtection && p.alive) {
+                        p.protectedThisNight = true;
+                        cout << p.name << " is being protected by the Bodyguard." << endl;
+                        found = true;
+                        break;
+                    }
+                }
+        
+                if (found) {
+                    break;  // ถ้าพบชื่อที่ถูกต้องให้หยุดการรับค่า
+                } else {
+                    cout << "\033[33mNot found. Please choose a valid player.\033[0m" << endl;
                 }
             }
 
@@ -363,8 +413,29 @@ $ $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ $
             """"""""""""""""""""
 
     )" << endl;
-            cout << "\033[34mSpellcaster, choose a player to silence: \033[0m";
-            cin >> spellTarget;
+    bool validTarget = false;
+
+    while (true) {
+        cout << "\033[34mSpellcaster, choose a player to silence: \033[0m";
+        cin >> spellTarget;
+
+        // ตรวจสอบชื่อผู้เล่น
+        validTarget = false;
+        for (auto& player : players) {
+            if (player.name == spellTarget && player.alive) {
+                validTarget = true;
+                player.muted = true;
+                cout << player.name << " has been silenced and cannot speak next round!" << endl;
+                break;
+            }
+        }
+
+        if (!validTarget) {
+            cout << "\033[31mPlayer not found or already dead. Please choose a valid player.\033[0m" << endl;
+        } else {
+            break;  // เมื่อเลือกชื่อที่ถูกต้องแล้วออกจากลูป
+        }
+    }
 
             // Wait for Enter to hide the action
             cout << "Press Enter to hide and close your eyes...";
@@ -402,9 +473,7 @@ $ $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ $
                     p.alive = false;
                     cout << p.name << "\033[31m was killed by the Werewolves.\033[0m" << endl;
 
-                    if (p.role == HUNTER) {
-                        hunterRevenge(players);
-                    }
+                  
                 }
                 break;
             }
@@ -415,7 +484,7 @@ $ $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ $
 }
 
 
-void dayPhase(vector<Player>& players) {
+void dayPhase(vector<Player>& players, bool &hunterDiedAtNight) {
     Beep(500, 1000);  // เสียง Beep
       cout << R"( 
            .     :     .
@@ -435,6 +504,10 @@ void dayPhase(vector<Player>& players) {
               .     :     .
 
    )" << endl;
+   if (hunterDiedAtNight) {
+    hunterRevenge(players);
+    hunterDiedAtNight = false; // รีเซ็ตค่า
+}
     cout << "\n\033[36mDay breaks. Villagers, choose someone to lynch.\033[0m" << endl;
     string targetName;
     cout << "\033[31mEnter the name of the player to lynch: \033[0m";
@@ -445,31 +518,18 @@ void dayPhase(vector<Player>& players) {
             player.alive = false;
             cout << player.name << "\033[31m was lynched by the Villagers.\033[0m" << endl;
              // Check if the lynched player is a Beggar
+
              if (player.role == BEGGAR) {
-                cout << R"( 
-                    _.,-----/=\-----,._
-                     (__ ~~~"""""""~~~ __)
-                      | ~~~"""""""""~~~ |
-                      | |  ; ,   , ;  | |
-                      | |  | |   | |  | |
-                      | |  | |   | |  | |
-                      | |  | |   | |  | |
-                      | |  | |   | |  | |
-                      | |  | |   | |  | |
-                      | |  | |   | |  | |
-                      | |  | |   | |  | |
-                      |. \_| |   | |_/ .|
-                       `-,.__ ~~~ __.,-'
-                             ~~~~~
-                       )" << endl;
                 cout << "The Beggar has been lynched... but the Beggar wins!" << endl;
                 exit(0);  // End the game as Beggar wins
+                
             }
         
             return;
         }
     }
     cout << "\033[31mPlayer not found or already dead.\033[0m" << endl;
+    this_thread::sleep_for(chrono::seconds(5));
 }
 
 bool gameOver(const vector<Player>& players) {
@@ -491,6 +551,29 @@ void displayWinner(const vector<Player>& players) {
             else ++villagers;
         }
     }
+    cout << R"(   
+            
+                 .-"-.
+   *     (   +  /     \ . )
+      )   )     |#    |  (   *
+  .  (      .    \___/         .
+   + .-"-.    *   /^    +  (
+    /     \  )   (  .-"-.    )  +
+ .  |#    | (    * /     \  (  )
+     \___/   )  (  |#    |    (  '
+  *   /^         )  \___/
+     (    *  '  (     ^\   *  '
+ .    \     , , , , , ' \       +
+       )    | | | | |    ) .
+   *    . @%@%@%@%@%@%@ (    )
+   (      {    you    }  \  (   *
+    ) *   {    win!   }   )    (
+   (    @%@%@%@%@%@%@%@%@       ) '
+ +      {               }  *   (
+        {               }    .    )
+  jgs   {               }        (
+*      @%@%@%@%@%@%@%@%@%@    +                                       
+ )" << endl;
     werewolves == 0 ? cout << "\033[32mVillagers win!\033[0m" << endl : cout << "\033[31mWerewolves win!\033[0m" << endl;
 }
 
@@ -539,44 +622,15 @@ int main() {
 
     assignRoles(players);
     displayRoles(players);
-
+    bool hunterDiedAtNight = false; // กำหนดค่าตัวแปร hunterDiedAtNight
     while (!gameOver(players)) {
-        nightPhase(players);
+        nightPhase(players, hunterDiedAtNight);
         if (gameOver(players)) break;
-        dayPhase(players);
+        dayPhase(players, hunterDiedAtNight);
     }
 
     displayWinner(players);
-    cout << R"( 
-        ,____.
-                     ,-^      ^-.___
-                    /            \  ^-.
-                  _|          /~\ |    \
-               _-^ |          (#) |0    |
-              /    |          \_/ |_____|____
-             /      \            /       _-^~~~\
-            / \    _-`-_      _-'     _-^  \  \|
-           /   \  /      ~~~~~~|   __-^ \   \   \
-          |     \/            \  /   \   \  _-^^
-          |     |              \/---______-^
-           \     \              |########/
-            \     \             |##\||///
-             ^-_   \            |###|//'             '
-                \_-^\           |###|/|          '
-                 \   |          |###|/|       o
-              _   | /           |###//|            '
-             < \_/ /            |-----~~~~~~~~---____
-              \___/             |\   _-^\^^--__      ^.
-                               /  \_/##\\|     ^^--__-'
-                              /    _=--^'      '
-                    ,_____.  /  _-^
-                   / ,--- _-^_-^
-                   ||  _-^_-^
-                   |\  _-^/|
-                    \`---'/
-                     `^^^'
    
-      )" << endl;
     cout << "\033[36mGame over!\033[0m" << endl;
     return 0;
 }
