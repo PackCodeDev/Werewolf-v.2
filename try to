@@ -221,10 +221,10 @@ void nightPhase(vector<Player>& players, bool &hunterDiedAtNight) {
     for (auto& p : players) {
         if (p.name == werewolfTarget && p.alive) {
             if (p.protectedThisNight) {
-                cout << p.name << " \033[32m was protected and survived!\033[0m" << endl;
+                cout << p.name << " \033[32m wasprotected and survived!\033[0m" << endl;
             } else {
                 p.alive = false;
-                cout << p.name << " \033[31m was kiled by werewolf.\033[0m" << endl;
+                cout << p.name << " \033[31m was killed by werewolf\033[0m" << endl;
 
                 // ถ้าฮันเตอร์ตาย ให้บันทึกค่า
                 if (p.role == HUNTER) {
@@ -474,6 +474,7 @@ void dayPhase(vector<Player>& players, bool &hunterDiedAtNight) {
         }
     }
     cout << "\033[31mPlayer not found or already dead.\033[0m" << endl;
+    this_thread::sleep_for(chrono::seconds(5));
 }
 
 bool gameOver(const vector<Player>& players) {
