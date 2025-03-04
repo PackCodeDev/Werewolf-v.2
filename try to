@@ -80,8 +80,36 @@ void displayRoles(vector<Player>& players) {
         #endif
     }
 
-    cout << "\n\033[35m All roles have been assigned. The game begins now! close your eyes\033[0m" << endl;
-    this_thread::sleep_for(chrono::seconds(15)); // Wait for players to prepare before starting
+    cout << "\n\033[35m All roles have been assigned. The game begins now!close your eyes\033[0m" << endl;
+    
+     cout << R"( 
+                                                    
+                      ::---====                
+                        ::----=====            
+                         :::------===          
+                          :::-------===        
+                           ::--------====      
+                            ::--------====     
+                             ::--------====    
+                             :::---------===   
+                              ::----=*=---===  
+                              ::--=-.:@@--===  
+                              ::--+. -@@+-===  
+                              ::---%@@@#--===  
+                              :-------=---===  
+                              -----======--==  
+                             :-----===----===  
+                            ::-----------===   
+                           +---*%+------===    
+                         :::-----------===     
+                      ::::-----------====      
+      =---:::::::::::::------------=====       
+        ==----------------------=====          
+          ========----------=======            
+              =================                
+                                               
+   )" << endl;
+   this_thread::sleep_for(chrono::seconds(5)); // Wait for players to prepare before starting
 }
 void hunterRevenge(vector<Player>& players) {
     string target;
@@ -121,9 +149,10 @@ void hunterRevenge(vector<Player>& players) {
     cout << "\033[31m Player not found or already dead. No one was shot.\033[0m" << endl;
 }
 
-void nightPhase(vector<Player>& players) {
+void nightPhase(vector<Player>& players, bool &hunterDiedAtNight) {
 
     Beep(500, 300);  // เสียง Beep หลังจากหน่วงเวลา
+    
     cout << "\nNight falls. Werewolves, choose your victim." << endl;
 
     string werewolfTarget;
@@ -169,7 +198,7 @@ void nightPhase(vector<Player>& players) {
             cin.ignore();  // Clear buffer
             cin.get();     // Wait for Enter
             
-            this_thread::sleep_for(chrono::seconds(20)); // หน่วงเวลา 20วินาที
+            this_thread::sleep_for(chrono::seconds(5)); // หน่วงเวลา 20วินาที
             Beep(500, 300);  // เสียง Beep หลังจากหน่วงเวลา
 
             // Clear the screen after selection
@@ -187,6 +216,22 @@ void nightPhase(vector<Player>& players) {
                 }
             }
             if (victimFound) break;
+        }
+    }
+    for (auto& p : players) {
+        if (p.name == werewolfTarget && p.alive) {
+            if (p.protectedThisNight) {
+                cout << p.name << " \033[32m wasprotected and survived!\033[0m" << endl;
+            } else {
+                p.alive = false;
+                cout << p.name << " \033[31m was killed by werewolf\033[0m" << endl;
+
+                // ถ้าฮันเตอร์ตาย ให้บันทึกค่า
+                if (p.role == HUNTER) {
+                    hunterDiedAtNight = true;
+                }
+            }
+            break;
         }
     }
 
@@ -229,7 +274,7 @@ _---              000000     000000              ---_
             cin.ignore();  // Clear buffer
             cin.get();     // Wait for Enter
             
-            this_thread::sleep_for(chrono::seconds(20)); // หน่วงเวลา 20วินาที
+            this_thread::sleep_for(chrono::seconds(5)); // หน่วงเวลา 20วินาที
             Beep(500, 300);  // เสียง Beep หลังจากหน่วงเวลา
             // Clear the screen after selection
             #ifdef _WIN32
@@ -288,7 +333,7 @@ _---              000000     000000              ---_
             cin.ignore();  // Clear buffer
             cin.get();     // Wait for Enter
             
-            this_thread::sleep_for(chrono::seconds(20)); // หน่วงเวลา 20วินาที
+            this_thread::sleep_for(chrono::seconds(5)); // หน่วงเวลา 20วินาที
             Beep(500, 300);  // เสียง Beep หลังจากหน่วงเวลา
             // Clear the screen after selection
             #ifdef _WIN32
@@ -342,7 +387,7 @@ $ $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ $
             cin.ignore();  // Clear buffer
             cin.get();     // Wait for Enter
             
-            this_thread::sleep_for(chrono::seconds(20)); // หน่วงเวลา 20วินาที
+            this_thread::sleep_for(chrono::seconds(5)); // หน่วงเวลา 20วินาที
             Beep(500, 300);  // เสียง Beep หลังจากหน่วงเวลา
             // Clear the screen after selection
             #ifdef _WIN32
@@ -373,9 +418,7 @@ $ $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ $
                     p.alive = false;
                     cout << p.name << "\033[31m was killed by the Werewolves.\033[0m" << endl;
 
-                    if (p.role == HUNTER) {
-                        hunterRevenge(players);
-                    }
+                  
                 }
                 break;
             }
@@ -386,8 +429,30 @@ $ $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ $
 }
 
 
-void dayPhase(vector<Player>& players) {
+void dayPhase(vector<Player>& players, bool &hunterDiedAtNight) {
     Beep(500, 1000);  // เสียง Beep
+      cout << R"( 
+           .     :     .
+            .  :    |    :  .
+             .  |   |   |  ,
+              \  |     |  /
+          .     ,-'"""`-.     .
+            "- /  __ __  \ -"
+              |==|  I  |==|
+        - --- | _`--^--'_ | --- -
+              |'`.     ,'`|
+            _- \  "---"  / -_
+          .     `-.___,-'     .
+              /  |     |  \
+            .'  |   |   |  `.
+               :    |    :
+              .     :     .
+
+   )" << endl;
+   if (hunterDiedAtNight) {
+    hunterRevenge(players);
+    hunterDiedAtNight = false; // รีเซ็ตค่า
+}
     cout << "\n\033[36mDay breaks. Villagers, choose someone to lynch.\033[0m" << endl;
     string targetName;
     cout << "\033[31mEnter the name of the player to lynch: \033[0m";
@@ -398,15 +463,18 @@ void dayPhase(vector<Player>& players) {
             player.alive = false;
             cout << player.name << "\033[31m was lynched by the Villagers.\033[0m" << endl;
              // Check if the lynched player is a Beggar
+
              if (player.role == BEGGAR) {
                 cout << "The Beggar has been lynched... but the Beggar wins!" << endl;
                 exit(0);  // End the game as Beggar wins
+                
             }
         
             return;
         }
     }
     cout << "\033[31mPlayer not found or already dead.\033[0m" << endl;
+    this_thread::sleep_for(chrono::seconds(5));
 }
 
 bool gameOver(const vector<Player>& players) {
@@ -428,6 +496,29 @@ void displayWinner(const vector<Player>& players) {
             else ++villagers;
         }
     }
+    cout << R"(   
+            
+                 .-"-.
+   *     (   +  /     \ . )
+      )   )     |#    |  (   *
+  .  (      .    \___/         .
+   + .-"-.    *   /^    +  (
+    /     \  )   (  .-"-.    )  +
+ .  |#    | (    * /     \  (  )
+     \___/   )  (  |#    |    (  '
+  *   /^         )  \___/
+     (    *  '  (     ^\   *  '
+ .    \     , , , , , ' \       +
+       )    | | | | |    ) .
+   *    . @%@%@%@%@%@%@ (    )
+   (      {    you    }  \  (   *
+    ) *   {    win!   }   )    (
+   (    @%@%@%@%@%@%@%@%@       ) '
+ +      {               }  *   (
+        {               }    .    )
+  jgs   {               }        (
+*      @%@%@%@%@%@%@%@%@%@    +                                       
+ )" << endl;
     werewolves == 0 ? cout << "\033[32mVillagers win!\033[0m" << endl : cout << "\033[31mWerewolves win!\033[0m" << endl;
 }
 
@@ -476,14 +567,15 @@ int main() {
 
     assignRoles(players);
     displayRoles(players);
-
+    bool hunterDiedAtNight = false; // กำหนดค่าตัวแปร hunterDiedAtNight
     while (!gameOver(players)) {
-        nightPhase(players);
+        nightPhase(players, hunterDiedAtNight);
         if (gameOver(players)) break;
-        dayPhase(players);
+        dayPhase(players, hunterDiedAtNight);
     }
 
     displayWinner(players);
+   
     cout << "\033[36mGame over!\033[0m" << endl;
     return 0;
 }
