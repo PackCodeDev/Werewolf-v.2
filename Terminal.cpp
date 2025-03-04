@@ -1,3 +1,4 @@
+
 #include <iostream>
 #include <vector>
 #include <string>
@@ -201,8 +202,29 @@ void nightPhase(vector<Player>& players, bool &hunterDiedAtNight) {
                                       ;                      
                                                                                        
               )" << endl;
-            cout << "\033[31mWerewolf, choose a player to kill: \033[0m";
-            cin >> werewolfTarget;
+              bool validTarget = false;
+
+              while (true) {
+                  cout << "\033[31mWerewolf, choose a player to kill: \033[0m";
+                  cin >> werewolfTarget;
+          
+                  // ตรวจสอบชื่อผู้เล่น
+                  validTarget = false;
+                  for (auto& player : players) {
+                      if (player.name == werewolfTarget && player.alive) {
+                          validTarget = true;
+                          player.alive = false;
+                          cout << player.name << " \033[31m was killed by the Werewolf!\033[0m" << endl;
+                          break;
+                      }
+                  }
+          
+                  if (!validTarget) {
+                      cout << "\033[33mPlayer not found or already dead. Please choose a valid player.\033[0m" << endl;
+                  } else {
+                      break;  // เมื่อเลือกชื่อที่ถูกต้องแล้วออกจากลูป
+                  }
+              }
 
             // Wait for Enter to hide the action
             cout << "Press Enter to hide and close your eyes...";
@@ -286,7 +308,7 @@ while (true) {
     if (found) {
         break;  // If the player is found, exit the loop
     } else {
-        cout << "Not found. Please choose a valid player." << endl;
+        cout << "\033[33mNot found. Please choose a valid player.\033[0m" << endl;
     }
 }
 
@@ -356,7 +378,7 @@ while (true) {
                 if (found) {
                     break;  // ถ้าพบชื่อที่ถูกต้องให้หยุดการรับค่า
                 } else {
-                    cout << "Not found. Please choose a valid player." << endl;
+                    cout << "\033[33mNot found. Please choose a valid player.\033[0m" << endl;
                 }
             }
 
@@ -411,8 +433,29 @@ $ $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ $
             """"""""""""""""""""
 
     )" << endl;
-            cout << "\033[34mSpellcaster, choose a player to silence: \033[0m";
-            cin >> spellTarget;
+    bool validTarget = false;
+
+    while (true) {
+        cout << "\033[34mSpellcaster, choose a player to silence: \033[0m";
+        cin >> spellTarget;
+
+        // ตรวจสอบชื่อผู้เล่น
+        validTarget = false;
+        for (auto& player : players) {
+            if (player.name == spellTarget && player.alive) {
+                validTarget = true;
+                player.muted = true;
+                cout << player.name << " has been silenced and cannot speak next round!" << endl;
+                break;
+            }
+        }
+
+        if (!validTarget) {
+            cout << "\033[31mPlayer not found or already dead. Please choose a valid player.\033[0m" << endl;
+        } else {
+            break;  // เมื่อเลือกชื่อที่ถูกต้องแล้วออกจากลูป
+        }
+    }
 
             // Wait for Enter to hide the action
             cout << "Press Enter to hide and close your eyes...";
