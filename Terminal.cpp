@@ -202,53 +202,52 @@ void nightPhase(vector<Player>& players, bool &hunterDiedAtNight) {
                                       ;                      
                                                                                        
               )" << endl;
-              bool validTarget = false;
+              
 
               cout << "\033[31mWerewolf, choose a player to kill: \033[0m";
               cin >> werewolfTarget;
-
-            // Wait for Enter to hide the action
-            cout << "Press Enter to hide and close your eyes...";
-            cin.ignore();  // Clear buffer
-            cin.get();     // Wait for Enter
-            
-            this_thread::sleep_for(chrono::seconds(5)); // หน่วงเวลา 20วินาที
-            Beep(500, 300);  // เสียง Beep หลังจากหน่วงเวลา
-
-            // Clear the screen after selection
-            #ifdef _WIN32
-                system("CLS");  // For Windows
-            #else
-                system("clear");  // For Linux/macOS
-            #endif
-
-            // Find the target
-            for (auto& p : players) {
-                if (p.name == werewolfTarget && p.alive) {
-                    victimFound = true;
-                    break;
-                }
-            }
-            if (victimFound) break;
-        }
-    }
-    for (auto& p : players) {
-        if (p.name == werewolfTarget && p.alive) {
-            if (p.protectedThisNight) {
-                cout << p.name << " \033[32m wasprotected and survived!\033[0m" << endl;
-            } else {
-                p.alive = false;
-                cout << p.name << " \033[31m was killed by werewolf\033[0m" << endl;
-
-                // ถ้าฮันเตอร์ตาย ให้บันทึกค่า
-                if (p.role == HUNTER) {
-                    hunterDiedAtNight = true;
-                }
-            }
-            break;
-        }
-    }
-
+  
+              // Wait for Enter to hide the action
+              cout << "Press Enter to hide and close your eyes...";
+              cin.ignore();  // Clear buffer
+              cin.get();     // Wait for Enter
+              
+              this_thread::sleep_for(chrono::seconds(5)); // หน่วงเวลา 20วินาที
+              Beep(500, 300);  // เสียง Beep หลังจากหน่วงเวลา
+  
+              // Clear the screen after selection
+              #ifdef _WIN32
+                  system("CLS");  // For Windows
+              #else
+                  system("clear");  // For Linux/macOS
+              #endif
+  
+              // Find the target
+              for (auto& p : players) {
+                  if (p.name == werewolfTarget && p.alive) {
+                      victimFound = true;
+                      break;
+                  }
+              }
+              if (victimFound) break;
+          }
+      }
+      for (auto& p : players) {
+          if (p.name == werewolfTarget && p.alive) {
+              if (p.protectedThisNight) {
+                  cout << p.name << " \033[32m was protected and survived!\033[0m" << endl;
+              } else {
+                  p.alive = false;
+                  cout << p.name << " \033[31m was killed by werewolf.\033[0m" << endl;
+  
+                  // ถ้าฮันเตอร์ตาย ให้บันทึกค่า
+                  if (p.role == HUNTER) {
+                      hunterDiedAtNight = true;
+                  }
+              }
+              break;
+          }
+      }
     // Seer checks a player
     for (auto& player : players) {
         if (player.alive && player.role == SEER) {
