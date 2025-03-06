@@ -509,32 +509,38 @@ void dayPhase(vector<Player>& players, bool &hunterDiedAtNight) {
               .     :     .
 
    )" << endl;
-   if (hunterDiedAtNight) {
-    hunterRevenge(players);
-    hunterDiedAtNight = false; // รีเซ็ตค่า
-}
-    cout << "\n\033[36mDay breaks. Villagers, choose someone to lynch.\033[0m" << endl;
-    string targetName;
-    cout << "\033[31mEnter the name of the player to lynch: \033[0m";
-    cin >> targetName;
+   cout << "\n\033[36mDay breaks. Villagers, choose someone to lynch.\033[0m" << endl;
 
-    for (auto& player : players) {
-        if (player.name == targetName && player.alive) {
-            player.alive = false;
-            cout << player.name << "\033[31m was lynched by the Villagers.\033[0m" << endl;
-             // Check if the lynched player is a Beggar
 
-             if (player.role == BEGGAR) {
-                cout << "\033[33mThe Beggar has been lynched... but the Beggar wins!\033[0m" << endl;
-                cout << "\033[36mGame over!\033[0m" << endl;
-                exit(0);  // End the game as Beggar wins
-                
-            }
-        
-            return;
-        }
-    }
-    cout << "\033[31mPlayer not found or already dead.\033[0m" << endl;
+   for (auto& player : players) {
+       if (!player.alive && player.role == VILLAGER) { // Hunter ที่ถูกฆ่าเมื่อคืน
+           cout << "Before the town votes, the Hunter takes their last shot!" << endl;
+           hunterRevenge(players);
+           break;
+       }
+   }
+
+   string targetName;
+   cout << "\033[31mEnter the name of the player to lynch: \033[0m";
+   cin >> targetName;
+
+
+
+
+   for (auto& player : players) {
+       if (player.name == targetName && player.alive) {
+           player.alive = false;
+           cout << player.name << " was lynched by the Villagers." << endl;
+
+           if (player.role == BEGGAR) {
+               cout << "\033[33mThe Beggar has been lynched... but the Beggar wins!\033[0m" << endl;
+               cout << "\033[36mGame over!\033[0m" << endl;
+               exit(0);
+           }
+           return;
+       }
+   }
+   cout << "\033[31mPlayer not found or already dead.\033[0m" << endl;
     this_thread::sleep_for(chrono::seconds(5));
 }
 
