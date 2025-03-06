@@ -525,7 +525,8 @@ void dayPhase(vector<Player>& players, bool &hunterDiedAtNight) {
              // Check if the lynched player is a Beggar
 
              if (player.role == BEGGAR) {
-                cout << "The Beggar has been lynched... but the Beggar wins!" << endl;
+                cout << "\033[33mThe Beggar has been lynched... but the Beggar wins!\033[0m" << endl;
+                cout << "\033[36mGame over!\033[0m" << endl;
                 exit(0);  // End the game as Beggar wins
                 
             }
@@ -576,7 +577,7 @@ void displayWinner(const vector<Player>& players) {
    (    @%@%@%@%@%@%@%@%@       ) '
  +      {               }  *   (
         {               }    .    )
-  jgs   {               }        (
+        {               }        (
 *      @%@%@%@%@%@%@%@%@%@    +                                       
  )" << endl;
     werewolves == 0 ? cout << "\033[32mVillagers win!\033[0m" << endl : cout << "\033[31mWerewolves win!\033[0m" << endl;
