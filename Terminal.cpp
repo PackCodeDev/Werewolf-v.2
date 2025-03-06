@@ -138,6 +138,11 @@ void hunterRevenge(vector<Player>& players) {
 ::::::`:::::;'  /  /   `#
 )" << endl;
 while (true) {
+    Beep(500, 300);
+    Beep(500, 300);
+    Beep(500, 300);
+    Beep(500, 300);
+    Beep(500, 300);
     cout << "\033[34mThe Hunter has died! Choose someone to take down with you: \033[0m";
     cin >> target;
 
@@ -153,7 +158,7 @@ while (true) {
     }
 
     if (!targetValid) {
-        cout << "\033[31mPlayer not found or already dead. Please choose a valid player.\033[0m" << endl;
+        cout << "\033[33mPlayer not found or already dead. Please choose a valid player.\033[0m" << endl;
     } else {
         break;  // ถ้าผู้เล่นที่เลือกถูกต้องจะออกจากลูป
     }
@@ -206,25 +211,29 @@ void nightPhase(vector<Player>& players, bool &hunterDiedAtNight) {
 
               bool validTarget = false;
 
-              while (true) {
-                  cout << "\033[31mWerewolf, choose a player to kill: \033[0m";
-                  cin >> werewolfTarget;
-              
-                  // ตรวจสอบว่าผู้เล่นอยู่ในรายชื่อและยังมีชีวิตอยู่หรือไม่
-                  validTarget = false;
-                  for (auto& player : players) {
-                      if (player.name == werewolfTarget && player.alive) {
-                          validTarget = true;
-                          break;
-                      }
-                  }
-              
-                  if (!validTarget) {
-                      cout << "\033[31mPlayer not found or already dead. Please choose a valid player.\033[0m" << endl;
-                  } else {
-                      break;  // เมื่อเลือกชื่อที่ถูกต้องแล้ว ออกจากลูป
-                  }
-              }
+while (true) {
+    cout << "\033[31mWerewolf, choose a player to kill: \033[0m";
+    cin >> werewolfTarget;
+
+    validTarget = false;
+    for (auto& player : players) {
+        if (player.name == werewolfTarget && player.alive) {
+            if (player.role == WEREWOLF) {  // ห้ามฆ่าหมาป่าด้วยกันเอง
+                cout << "\033[33mYou cannot kill another Werewolf! Choose again.\033[0m" << endl;
+            } else {
+                validTarget = true;
+                break;
+            }
+        }
+    }
+
+    if (!validTarget) {
+        cout << "\033[33mPlayer not found, already dead, or invalid target. Please choose again.\033[0m" << endl;
+    } else {
+        break;  // ถ้าเลือกชื่อถูกต้อง และไม่ใช่หมาป่า ออกจากลูป
+    }
+}
+
               
   
               // Wait for Enter to hide the action
@@ -233,6 +242,7 @@ void nightPhase(vector<Player>& players, bool &hunterDiedAtNight) {
               cin.get();     // Wait for Enter
               
               this_thread::sleep_for(chrono::seconds(5)); // หน่วงเวลา 20วินาที
+              Beep(500, 300);  // เสียง Beep หลังจากหน่วงเวลา
               Beep(500, 300);  // เสียง Beep หลังจากหน่วงเวลา
   
               // Clear the screen after selection
@@ -302,6 +312,8 @@ while (true) {
             cin.get();     // Wait for Enter
             
             this_thread::sleep_for(chrono::seconds(5)); // หน่วงเวลา 20วินาที
+            Beep(500, 300);  // เสียง Beep หลังจากหน่วงเวลา
+            Beep(500, 300);  // เสียง Beep หลังจากหน่วงเวลา
             Beep(500, 300);  // เสียง Beep หลังจากหน่วงเวลา
             // Clear the screen after selection
             #ifdef _WIN32
@@ -373,6 +385,9 @@ while (true) {
             
             this_thread::sleep_for(chrono::seconds(5)); // หน่วงเวลา 20วินาที
             Beep(500, 300);  // เสียง Beep หลังจากหน่วงเวลา
+            Beep(500, 300);  // เสียง Beep หลังจากหน่วงเวลา
+            Beep(500, 300);  // เสียง Beep หลังจากหน่วงเวลา
+            Beep(500, 300);  // เสียง Beep หลังจากหน่วงเวลา
             // Clear the screen after selection
             #ifdef _WIN32
                 system("CLS");  // For Windows
@@ -435,7 +450,7 @@ $ $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ $
         }
 
         if (!validTarget) {
-            cout << "\033[31mPlayer not found or already dead. Please choose a valid player.\033[0m" << endl;
+            cout << "\033[33mPlayer not found or already dead. Please choose a valid player.\033[0m" << endl;
         } else {
             break;  // เมื่อเลือกชื่อที่ถูกต้องแล้วออกจากลูป
         }
@@ -447,6 +462,10 @@ $ $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ $
             cin.get();     // Wait for Enter
             
             this_thread::sleep_for(chrono::seconds(5)); // หน่วงเวลา 20วินาที
+            Beep(500, 300);  // เสียง Beep หลังจากหน่วงเวลา
+            Beep(500, 300);  // เสียง Beep หลังจากหน่วงเวลา
+            Beep(500, 300);  // เสียง Beep หลังจากหน่วงเวลา
+            Beep(500, 300);  // เสียง Beep หลังจากหน่วงเวลา
             Beep(500, 300);  // เสียง Beep หลังจากหน่วงเวลา
             // Clear the screen after selection
             #ifdef _WIN32
@@ -540,7 +559,7 @@ void dayPhase(vector<Player>& players, bool &hunterDiedAtNight) {
            return;
        }
    }
-   cout << "\033[31mPlayer not found or already dead.\033[0m" << endl;
+   cout << "\033[33mPlayer not found or already dead.\033[0m" << endl;
     this_thread::sleep_for(chrono::seconds(5));
 }
 
@@ -642,7 +661,8 @@ int main() {
     }
 
     displayWinner(players);
-   
+    Beep(500, 1000);  // เสียง Beep
     cout << "\033[36mGame over!\033[0m" << endl;
     return 0;
 }
+
