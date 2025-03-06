@@ -204,8 +204,28 @@ void nightPhase(vector<Player>& players, bool &hunterDiedAtNight) {
               )" << endl;
               
 
-              cout << "\033[31mWerewolf, choose a player to kill: \033[0m";
-              cin >> werewolfTarget;
+              bool validTarget = false;
+
+              while (true) {
+                  cout << "\033[31mWerewolf, choose a player to kill: \033[0m";
+                  cin >> werewolfTarget;
+              
+                  // ตรวจสอบว่าผู้เล่นอยู่ในรายชื่อและยังมีชีวิตอยู่หรือไม่
+                  validTarget = false;
+                  for (auto& player : players) {
+                      if (player.name == werewolfTarget && player.alive) {
+                          validTarget = true;
+                          break;
+                      }
+                  }
+              
+                  if (!validTarget) {
+                      cout << "\033[31mPlayer not found or already dead. Please choose a valid player.\033[0m" << endl;
+                  } else {
+                      break;  // เมื่อเลือกชื่อที่ถูกต้องแล้ว ออกจากลูป
+                  }
+              }
+              
   
               // Wait for Enter to hide the action
               cout << "Press Enter to hide and close your eyes...";
@@ -230,22 +250,6 @@ void nightPhase(vector<Player>& players, bool &hunterDiedAtNight) {
                   }
               }
               if (victimFound) break;
-          }
-      }
-      for (auto& p : players) {
-          if (p.name == werewolfTarget && p.alive) {
-              if (p.protectedThisNight) {
-                  cout << p.name << " \033[32m was protected and survived!\033[0m" << endl;
-              } else {
-                  p.alive = false;
-                  cout << p.name << " \033[31m was killed by werewolf.\033[0m" << endl;
-  
-                  // ถ้าฮันเตอร์ตาย ให้บันทึกค่า
-                  if (p.role == HUNTER) {
-                      hunterDiedAtNight = true;
-                  }
-              }
-              break;
           }
       }
     // Seer checks a player
@@ -463,26 +467,27 @@ $ $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ $
         }
     }
 
-    // Process Werewolf's attack
-    if (victimFound) {
-        for (auto& p : players) {
-            if (p.name == werewolfTarget && p.alive) {
-                if (p.protectedThisNight) {
-                    cout << p.name << "\033[32m was protected and survived the attack!\033[0m " << endl;
-                } else {
-                    p.alive = false;
-                    cout << p.name << "\033[31m was killed by the Werewolves.\033[0m" << endl;
-
-                  
+        // Process Werewolf's attack
+        if (victimFound) {
+            for (auto& p : players) {
+                if (p.name == werewolfTarget && p.alive) {
+                    if (p.protectedThisNight) {
+                        cout << p.name << "\033[32m was protected and survived the attack!\033[0m " << endl;
+                    } else {
+                        p.alive = false;
+                        cout << p.name << "\033[31m was killed by the Werewolves.\033[0m" << endl;  
+                    }
+                    if (p.role == HUNTER) {
+                        p.role = VILLAGER; // เปลี่ยนเป็นชาวบ้าน เพราะตายแล้ว
+                        cout << "The Hunter has been killed! They will take revenge in the morning." << endl;
+                    }
+                    break;
                 }
-                break;
             }
+        } else {
+            cout << "\033[33mNo valid target was chosen by the Werewolves.\033[0m" << endl;
         }
-    } else {
-        cout << "\033[33mNo valid target was chosen by the Werewolves.\033[0m" << endl;
     }
-}
-
 
 void dayPhase(vector<Player>& players, bool &hunterDiedAtNight) {
     Beep(500, 1000);  // เสียง Beep
